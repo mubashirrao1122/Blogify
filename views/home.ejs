@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head.ejs') %>
+    <title>Home - Blogify</title>
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        .stats-section {
+            background: #f8f9fa;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.2s ease;
+            border: 1px solid #e9ecef;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        .blog-card {
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
+            border: 1px solid #e9ecef;
+            margin-bottom: 1.5rem;
+        }
+        .blog-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+        .blog-image {
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.2s ease;
+        }
+        .blog-card:hover .blog-image {
+            transform: scale(1.02);
+        }
+        .blog-badge {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: rgba(255,255,255,0.95);
+            color: #495057;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .author-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #f8f9fa;
+        }
+        .section-title {
+            position: relative;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: #6c757d;
+            border-radius: 1px;
+        }
+        .feature-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            border: 1px solid #e9ecef;
+        }
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: #6c757d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.2rem;
+        }
+        .floating-action {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+        }
+        .fab-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #495057;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+        }
+        .fab-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: white;
+            background: #343a40;
+        }
+        .empty-state {
+            background: #f8f9fa;
+            color: #495057;
+            padding: 3rem 2rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            margin: 2rem 0;
+            border: 1px solid #e9ecef;
+        }
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 3rem 0;
+            }
+            .stats-section {
+                padding: 2rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/nav.ejs', { user: user }) %>
+    
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="display-4 fw-bold mb-4">
+                        Welcome to <span class="text-light">Blogify</span>
+                    </h1>
+                    <p class="lead mb-4">
+                        Share your stories and connect with readers around the world.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 justify-content-center">
+                        <% if (user) { %>
+                            <a href="/blog/add-new" class="btn btn-light btn-lg px-4">
+                                <i class="fas fa-pen me-2"></i>Start Writing
+                            </a>
+                            <a href="/user/profile" class="btn btn-outline-light btn-lg px-4">
+                                <i class="fas fa-user me-2"></i>My Profile
+                            </a>
+                        <% } else { %>
+                            <a href="/user/signup" class="btn btn-light btn-lg px-4">
+                                <i class="fas fa-user-plus me-2"></i>Join Community
+                            </a>
+                            <a href="/user/signin" class="btn btn-outline-light btn-lg px-4">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-blog"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark"><%= blogs ? blogs.length : 0 %></h4>
+                        <p class="text-muted mb-0">Published Stories</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark"><%= user ? '1' : '0' %></h4>
+                        <p class="text-muted mb-0">Active Writers</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark">2025</h4>
+                        <p class="text-muted mb-0">Year Launched</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Blogs Section -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h3 class="section-title fw-bold">Recent Stories</h3>
+            </div>
+        </div>
+        <% if (blogs && blogs.length > 0) { %>
+            <!-- Featured Blog (First one) -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="blog-card position-relative">
+                        <div class="blog-badge">
+                            <i class="fas fa-star me-1"></i>Latest
+                        </div>
+                        <div class="row g-0">
+                            <div class="col-lg-6">
+                                <% if (blogs[0].coverImageURL) { %>
+                                    <img src="<%= blogs[0].coverImageURL %>" class="blog-image w-100 h-100" alt="<%= blogs[0].title %>">
+                                <% } else { %>
+                                    <div class="blog-image w-100 bg-light d-flex align-items-center justify-content-center" style="background: #f8f9fa;">
+                                        <i class="fas fa-image fa-4x text-muted"></i>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card-body p-4 h-100 d-flex flex-column">
+                                    <span class="badge bg-secondary mb-3 align-self-start">
+                                        <i class="fas fa-clock me-1"></i>Recent
+                                    </span>
+                                    <h3 class="card-title mb-3">
+                                        <% if (blogs[0]._id.toString().startsWith('fake')) { %>
+                                            <%= blogs[0].title %>
+                                        <% } else { %>
+                                            <a href="/blog/<%= blogs[0]._id %>" class="text-decoration-none text-dark">
+                                                <%= blogs[0].title %>
+                                            </a>
+                                        <% } %>
+                                    </h3>
+                                    <p class="card-text text-muted mb-4 flex-grow-1">
+                                        <%= blogs[0].body.length > 200 ? blogs[0].body.substring(0, 200) + '...' : blogs[0].body %>
+                                    </p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <div class="d-flex align-items-center">
+                                            <img src="<%= blogs[0].createdBy?.profileImage || 'https://via.placeholder.com/35x35/007bff/ffffff?text=' + (blogs[0].createdBy?.fullname?.charAt(0) || 'U') %>" 
+                                                 alt="Author" class="author-avatar me-2">
+                                            <div>
+                                                <small class="fw-bold text-dark d-block">
+                                                    <%= blogs[0].createdBy?.fullname || 'Unknown' %>
+                                                </small>
+                                                <small class="text-muted">
+                                                    <%= blogs[0].createdAt ? new Date(blogs[0].createdAt).toLocaleDateString() : 'Unknown' %>
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <% if (blogs[0]._id.toString().startsWith('fake')) { %>
+                                                <span class="btn btn-outline-secondary disabled">Sample</span>
+                                            <% } else { %>
+                                                <a href="/blog/<%= blogs[0]._id %>" class="btn btn-dark">
+                                                    <i class="fas fa-arrow-right me-1"></i>Read More
+                                                </a>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Blogs Grid -->
+            <div class="row g-4">
+                <% blogs.slice(1).forEach(blog => { %>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="blog-card h-100">
+                            <div class="position-relative">
+                                <% if (blog.coverImageURL) { %>
+                                    <img src="<%= blog.coverImageURL %>" class="blog-image w-100" alt="<%= blog.title %>">
+                                <% } else { %>
+                                    <div class="blog-image w-100 bg-light d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-image fa-3x text-muted"></i>
+                                    </div>
+                                <% } %>
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <span class="badge bg-white text-secondary">
+                                        <i class="fas fa-clock me-1"></i>
+                                        <%= Math.ceil(blog.body.split(' ').length / 200) %>m
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-body p-4 d-flex flex-column">
+                                <h5 class="card-title mb-3 fw-bold">
+                                    <% if (blog._id.toString().startsWith('fake')) { %>
+                                        <%= blog.title.length > 60 ? blog.title.substring(0, 60) + '...' : blog.title %>
+                                    <% } else { %>
+                                        <a href="/blog/<%= blog._id %>" class="text-decoration-none text-dark">
+                                            <%= blog.title.length > 60 ? blog.title.substring(0, 60) + '...' : blog.title %>
+                                        </a>
+                                    <% } %>
+                                </h5>
+                                
+                                <p class="card-text text-muted flex-grow-1 mb-4">
+                                    <%= blog.body.length > 120 ? blog.body.substring(0, 120) + '...' : blog.body %>
+                                </p>
+                                
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <img src="<%= blog.createdBy?.profileImage || 'https://via.placeholder.com/30x30/007bff/ffffff?text=' + (blog.createdBy?.fullname?.charAt(0) || 'U') %>" 
+                                                 alt="Author" class="author-avatar me-2" style="width: 30px; height: 30px;">
+                                            <small class="text-muted">
+                                                By <%= blog.createdBy?.fullname || 'Unknown' %>
+                                            </small>
+                                        </div>
+                                        <small class="text-muted">
+                                            <%= blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : 'Unknown' %>
+                                        </small>
+                                    </div>
+                                    <div class="d-grid">
+                                        <% if (blog._id.toString().startsWith('fake')) { %>
+                                            <button class="btn btn-outline-secondary disabled">
+                                                <i class="fas fa-eye me-2"></i>Sample Blog
+                                            </button>
+                                        <% } else { %>
+                                            <a href="/blog/<%= blog._id %>" class="btn btn-outline-dark">
+                                                <i class="fas fa-book-open me-2"></i>Read Article
+                                            </a>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } else { %>
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="mb-4">
+                    <i class="fas fa-feather-alt fa-4x text-muted"></i>
+                </div>
+                <h4 class="fw-bold mb-3">No Stories Yet</h4>
+                <p class="mb-4">
+                    Be the first to share your story with the community.
+                </p>
+                <% if (user) { %>
+                    <a href="/blog/add-new" class="btn btn-dark btn-lg">
+                        <i class="fas fa-plus me-2"></i>Write First Story
+                    </a>
+                <% } else { %>
+                    <a href="/user/signup" class="btn btn-dark btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Join to Write
+                    </a>
+                <% } %>
+            </div>
+        <% } %>
+
+        <!-- Features Section -->
+        <div class="row mt-4 pt-4">
+            <div class="col-12 text-center">
+                <h4 class="section-title fw-bold">Why Blogify?</h4>
+            </div>
+        </div>
+        <div class="row g-4 mb-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2">Easy Writing</h6>
+                    <p class="text-muted small">Simple editor to share your thoughts and stories.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2">Community</h6>
+                    <p class="text-muted small">Connect with fellow writers and readers.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2">Mobile Friendly</h6>
+                    <p class="text-muted small">Read and write on any device, anywhere.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <% if (user) { %>
+        <div class="floating-action">
+            <a href="/blog/add-new" class="fab-btn d-flex align-items-center justify-content-center text-decoration-none" title="Write New Blog">
+                <i class="fas fa-plus"></i>
+            </a>
+        </div>
+    <% } %>
+
+    <%- include('partials/script.ejs') %>
+    
+    <script>
+        // Simple card hover effects
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.blog-card, .stat-card, .feature-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

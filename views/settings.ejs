@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head.ejs') %>
+    <title>Settings - Blogify</title>
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        .settings-container {
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        .settings-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid #e9ecef;
+        }
+        .settings-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .settings-nav {
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .settings-tab {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: transparent;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            color: #6c757d;
+        }
+        .settings-tab.active {
+            background: white;
+            border-bottom-color: #495057;
+            color: #495057;
+        }
+        .settings-content {
+            padding: 2rem;
+        }
+        .form-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 3px solid #6c757d;
+        }
+        .danger-zone {
+            background: #fff5f5;
+            border-left-color: #dc3545 !important;
+        }
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .current-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #6c757d;
+            margin-bottom: 1rem;
+        }
+        .btn-primary {
+            background: #495057;
+            border-color: #495057;
+        }
+        .btn-primary:hover {
+            background: #343a40;
+            border-color: #343a40;
+        }
+        .form-control:focus {
+            border-color: #495057;
+            box-shadow: 0 0 0 0.2rem rgba(73, 80, 87, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/nav.ejs', { user: user, error: null }) %>
+    
+    <div class="settings-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="settings-card">
+                        <!-- Header -->
+                        <div class="settings-header">
+                            <h1 class="mb-2">
+                                <i class="fas fa-cog me-3"></i>Account Settings
+                            </h1>
+                            <p class="mb-0 opacity-90">Manage your account preferences and security</p>
+                        </div>
+
+                        <!-- Navigation Tabs -->
+                        <div class="settings-nav">
+                            <div class="d-flex flex-wrap">
+                                <button class="settings-tab active" onclick="showTab('profile')">
+                                    <i class="fas fa-user me-2"></i>Profile
+                                </button>
+                                <button class="settings-tab" onclick="showTab('security')">
+                                    <i class="fas fa-shield-alt me-2"></i>Security
+                                </button>
+                                <button class="settings-tab" onclick="showTab('preferences')">
+                                    <i class="fas fa-sliders-h me-2"></i>Preferences
+                                </button>
+                                <button class="settings-tab" onclick="showTab('danger')">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>Danger Zone
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="settings-content">
+                            <!-- Success/Error Messages -->
+                            <% if (success) { %>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-check-circle me-2"></i><%= success %>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            <% } %>
+                            
+                            <% if (error) { %>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-exclamation-circle me-2"></i><%= error %>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            <% } %>
+
+                            <!-- Profile Tab -->
+                            <div id="profile-tab" class="tab-content">
+                                <div class="form-section">
+                                    <h4 class="mb-3">
+                                        <i class="fas fa-user-edit me-2"></i>Profile Information
+                                    </h4>
+                                    
+                                    <!-- Avatar Section -->
+                                    <div class="avatar-section">
+                                        <img src="<%= user.profileImage || 'https://via.placeholder.com/120x120/007bff/ffffff?text=' + user.fullname.charAt(0) %>" 
+                                             alt="Profile Picture" 
+                                             class="current-avatar">
+                                        <br>
+                                        <button class="btn btn-outline-primary btn-sm" disabled>
+                                            <i class="fas fa-camera me-2"></i>Change Avatar (Coming Soon)
+                                        </button>
+                                    </div>
+
+                                    <form action="/user/settings/profile" method="POST">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="fullname" class="form-label">Full Name</label>
+                                                <input type="text" 
+                                                       class="form-control" 
+                                                       id="fullname" 
+                                                       name="fullname" 
+                                                       value="<%= user.fullname %>" 
+                                                       required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="email" class="form-label">Email Address</label>
+                                                <input type="email" 
+                                                       class="form-control" 
+                                                       id="email" 
+                                                       name="email" 
+                                                       value="<%= user.email %>" 
+                                                       required>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Account Role</label>
+                                            <input type="text" 
+                                                   class="form-control" 
+                                                   value="<%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %>" 
+                                                   disabled>
+                                            <small class="text-muted">Contact administrator to change role</small>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-2"></i>Update Profile
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Security Tab -->
+                            <div id="security-tab" class="tab-content" style="display: none;">
+                                <div class="form-section">
+                                    <h4 class="mb-3">
+                                        <i class="fas fa-key me-2"></i>Change Password
+                                    </h4>
+                                    <form action="/user/settings/password" method="POST">
+                                        <div class="mb-3">
+                                            <label for="currentPassword" class="form-label">Current Password</label>
+                                            <input type="password" 
+                                                   class="form-control" 
+                                                   id="currentPassword" 
+                                                   name="currentPassword" 
+                                                   required>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="newPassword" class="form-label">New Password</label>
+                                                <input type="password" 
+                                                       class="form-control" 
+                                                       id="newPassword" 
+                                                       name="newPassword" 
+                                                       minlength="6" 
+                                                       required>
+                                                <small class="text-muted">At least 6 characters</small>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                                <input type="password" 
+                                                       class="form-control" 
+                                                       id="confirmPassword" 
+                                                       name="confirmPassword" 
+                                                       minlength="6" 
+                                                       required>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-warning">
+                                            <i class="fas fa-shield-alt me-2"></i>Change Password
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div class="form-section">
+                                    <h4 class="mb-3">
+                                        <i class="fas fa-history me-2"></i>Account Activity
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Member Since:</strong><br>
+                                            <%= user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown' %></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Last Login:</strong><br>
+                                            <span class="text-success">Currently Active</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Preferences Tab -->
+                            <div id="preferences-tab" class="tab-content" style="display: none;">
+                                <div class="form-section">
+                                    <h4 class="mb-3">
+                                        <i class="fas fa-bell me-2"></i>Notification Preferences
+                                    </h4>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="emailNotifications" checked disabled>
+                                        <label class="form-check-label" for="emailNotifications">
+                                            Email notifications for new comments
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="weeklyDigest" checked disabled>
+                                        <label class="form-check-label" for="weeklyDigest">
+                                            Weekly digest of blog activity
+                                        </label>
+                                    </div>
+                                    <small class="text-muted">Notification settings coming soon</small>
+                                </div>
+
+                                <div class="form-section">
+                                    <h4 class="mb-3">
+                                        <i class="fas fa-palette me-2"></i>Display Preferences
+                                    </h4>
+                                    <div class="mb-3">
+                                        <label for="theme" class="form-label">Theme</label>
+                                        <select class="form-select" id="theme" disabled>
+                                            <option value="light" selected>Light Theme</option>
+                                            <option value="dark">Dark Theme</option>
+                                            <option value="auto">Auto (System)</option>
+                                        </select>
+                                        <small class="text-muted">Theme customization coming soon</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Danger Zone Tab -->
+                            <div id="danger-tab" class="tab-content" style="display: none;">
+                                <div class="form-section danger-zone">
+                                    <h4 class="mb-3 text-danger">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>Danger Zone
+                                    </h4>
+                                    <p class="text-muted mb-4">
+                                        These actions are irreversible. Please proceed with caution.
+                                    </p>
+                                    
+                                    <div class="border border-danger rounded p-3">
+                                        <h5 class="text-danger mb-3">Delete Account</h5>
+                                        <p class="mb-3">
+                                            This will permanently delete your account and all associated blogs. 
+                                            This action cannot be undone.
+                                        </p>
+                                        <form action="/user/settings/delete-account" method="POST" onsubmit="return confirmDelete()">
+                                            <div class="mb-3">
+                                                <label for="confirmDelete" class="form-label">
+                                                    Type <strong>DELETE</strong> to confirm:
+                                                </label>
+                                                <input type="text" 
+                                                       class="form-control" 
+                                                       id="confirmDelete" 
+                                                       name="confirmDelete" 
+                                                       placeholder="Type DELETE to confirm"
+                                                       required>
+                                            </div>
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="fas fa-trash me-2"></i>Delete My Account
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.style.display = 'none');
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.settings-tab');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab and add active class
+            document.getElementById(tabName + '-tab').style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        function confirmDelete() {
+            const input = document.getElementById('confirmDelete').value;
+            if (input !== 'DELETE') {
+                alert('Please type "DELETE" exactly to confirm account deletion.');
+                return false;
+            }
+            return confirm('Are you absolutely sure you want to delete your account? This action cannot be undone and will delete all your blogs permanently.');
+        }
+
+        // Password confirmation validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const newPassword = document.getElementById('newPassword');
+            const confirmPassword = document.getElementById('confirmPassword');
+            
+            function validatePassword() {
+                if (newPassword.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity('Passwords do not match');
+                } else {
+                    confirmPassword.setCustomValidity('');
+                }
+            }
+            
+            if (newPassword && confirmPassword) {
+                newPassword.addEventListener('change', validatePassword);
+                confirmPassword.addEventListener('keyup', validatePassword);
+            }
+        });
+    </script>
+    
+    <%- include('partials/script.ejs') %>
+</body>
+</html>

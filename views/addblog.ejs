@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head.ejs') %>
+    <title>Create New Story - Blogify</title>
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        .form-container {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            padding: 2rem;
+            border: 1px solid #e9ecef;
+        }
+        .form-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 3px solid #6c757d;
+        }
+        .section-title {
+            color: #495057;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-control {
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            transition: all 0.2s ease;
+        }
+        .form-control:focus {
+            border-color: #495057;
+            box-shadow: 0 0 0 0.2rem rgba(73, 80, 87, 0.1);
+        }
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+        .btn-create {
+            background: #495057;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .btn-create:hover {
+            background: #343a40;
+            transform: translateY(-1px);
+        }
+        .file-upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.2s ease;
+            background: #f8f9fa;
+        }
+        .file-upload-area:hover {
+            border-color: #6c757d;
+            background: #e9ecef;
+        }
+        .file-upload-icon {
+            font-size: 2rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+        .character-count {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-align: right;
+            margin-top: 0.25rem;
+        }
+        .form-tips {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+            margin-top: 1.5rem;
+        }
+        .tip-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .tip-item:last-child {
+            margin-bottom: 0;
+        }
+        .tip-icon {
+            color: #28a745;
+            margin-right: 0.75rem;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/nav.ejs', { user: user, error: null }) %>
+    
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="display-5 fw-bold mb-3">Create New Story</h1>
+                    <p class="lead mb-0">Share your thoughts and ideas with the world</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="form-container">
+                    <form action="/blog" method="POST" enctype="multipart/form-data" id="blogForm">
+                        
+                        <!-- Cover Image Section -->
+                        <div class="form-section">
+                            <div class="section-title">Cover Image</div>
+                            <div class="file-upload-area" onclick="document.getElementById('CoverImage').click()">
+                                <div class="file-upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <p class="mb-2"><strong>Click to upload cover image</strong></p>
+                                <p class="text-muted small mb-0">JPG, PNG or GIF (Max 5MB)</p>
+                                <input type="file" class="d-none" id="CoverImage" name="CoverImage" accept="image/*" onchange="previewImage(this)" />
+                                <img id="imagePreview" class="preview-image d-none" alt="Preview">
+                            </div>
+                        </div>
+
+                        <!-- Title Section -->
+                        <div class="form-section">
+                            <div class="section-title">Story Title</div>
+                            <label for="title" class="form-label">What's your story about?</label>
+                            <input type="text" class="form-control" id="title" name="title" 
+                                   placeholder="Enter an engaging title for your story..." 
+                                   maxlength="100" onkeyup="updateCharCount('title', 'titleCount', 100)" required />
+                            <div class="character-count">
+                                <span id="titleCount">0</span>/100 characters
+                            </div>
+                        </div>
+
+                        <!-- Content Section -->
+                        <div class="form-section">
+                            <div class="section-title">Story Content</div>
+                            <label for="content" class="form-label">Tell your story</label>
+                            <textarea class="form-control" id="content" name="body" rows="12" 
+                                      placeholder="Start writing your story here... Share your thoughts, experiences, or ideas with the community."
+                                      onkeyup="updateCharCount('content', 'contentCount', 5000)" required></textarea>
+                            <div class="character-count">
+                                <span id="contentCount">0</span>/5000 characters
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-create btn-lg">
+                                <i class="fas fa-pen me-2"></i>Publish Story
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Writing Tips -->
+                <div class="form-tips">
+                    <h6 class="fw-bold mb-3 text-dark">Writing Tips</h6>
+                    <div class="tip-item">
+                        <i class="fas fa-check-circle tip-icon"></i>
+                        <span>Write a compelling title that captures the essence of your story</span>
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-check-circle tip-icon"></i>
+                        <span>Use a high-quality cover image to make your story stand out</span>
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-check-circle tip-icon"></i>
+                        <span>Break your content into paragraphs for better readability</span>
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-check-circle tip-icon"></i>
+                        <span>Proofread your story before publishing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/script.ejs') %>
+    
+    <script>
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            const uploadArea = document.querySelector('.file-upload-area');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('d-none');
+                    uploadArea.style.padding = '1rem';
+                    uploadArea.querySelector('.file-upload-icon').style.display = 'none';
+                    uploadArea.querySelector('p').style.display = 'none';
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function updateCharCount(inputId, countId, maxLength) {
+            const input = document.getElementById(inputId);
+            const count = document.getElementById(countId);
+            const currentLength = input.value.length;
+            
+            count.textContent = currentLength;
+            
+            if (currentLength > maxLength * 0.9) {
+                count.style.color = '#dc3545';
+            } else if (currentLength > maxLength * 0.7) {
+                count.style.color = '#ffc107';
+            } else {
+                count.style.color = '#6c757d';
+            }
+        }
+        
+        // Form validation
+        document.getElementById('blogForm').addEventListener('submit', function(e) {
+            const title = document.getElementById('title').value.trim();
+            const content = document.getElementById('content').value.trim();
+            
+            if (!title) {
+                e.preventDefault();
+                alert('Please enter a title for your story.');
+                return;
+            }
+            
+            if (!content) {
+                e.preventDefault();
+                alert('Please write some content for your story.');
+                return;
+            }
+            
+            if (content.length < 50) {
+                e.preventDefault();
+                alert('Your story should be at least 50 characters long.');
+                return;
+            }
+        });
+    </script>
+</body>
+</html>
